@@ -1,0 +1,62 @@
+<script type="text/javascript">
+
+  const Http = new XMLHttpRequest();
+  //url for the product json
+  const url='https://starapps-js-test.myshopify.com/products/product_1.json';
+
+  Http.open("GET", url);
+  Http.send();
+  Http.onreadystatechange=(e)=>{
+  //see the output in browser console
+  console.log(createOption(Http.responseText));
+
+  }
+
+function createOption(stringJson) {
+  var options={};
+  options.option1=[];
+  var product=JSON.parse(stringJson);
+  product.product.variants.forEach(function(ele){
+    var found = options.option1.some(function (el) {
+    return el.value === ele.option1;
+  });
+  if(!found){
+    var op=[];
+    options.option1.push({"name" : product.product.options[0].name,"value" : ele.option1,"option2" :op});
+
+  }
+  options.option1.forEach(function(opt1){
+    if(ele.option2 != undefined){
+      if(opt1.value == ele.option1  && !opt1.option2.some(function(opt){
+        {
+          return opt.value === ele.option2;
+        }
+      })){
+        opt1.option2.push({"name" :product.product.options[1].name,"value" : ele.option2,  "option3" :[]});
+
+      }
+      opt1.option2.forEach(function(opt3){
+        if(ele.option3 != undefined){
+          if(opt3.value == ele.option2 && ! opt3.option3.some(function(someele3){
+            return someele3.value === ele.option3;
+          })){
+            opt3.option3.push({"name" : product.product.options[2].name,"value" :ele.option3});
+
+          }
+        }
+
+      });
+    }
+
+
+
+  });
+  });
+  var option ={
+    json :options
+  }
+
+  return JSON.stringify(options);
+}
+
+</script>
